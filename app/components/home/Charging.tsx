@@ -1,51 +1,111 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Charging() {
+  const leftSteps = [
+    {
+      num: "01",
+      title: "Locate & Navigate:",
+      desc: "Use the AURA mobile app or in-car navigation to find the nearest high-speed charging station on our network with real-time stall availability.",
+    },
+    {
+      num: "03",
+      title: "Initiate Session:",
+      desc: "Tap your payment card, phone, or simply plug in with automated Plug & Charge protocol on the station to begin the session.",
+    },
+    {
+      num: "05",
+      title: "Monitor Status:",
+      desc: "The station's display and the vehicle app will show real-time charging progress, the current battery percentage, and the estimated time remaining.",
+    },
+  ];
+
+  const rightSteps = [
+    {
+      num: "02",
+      title: "Arrive & Park:",
+      desc: "Drive up to the station and park your vehicle near the charging pedestal, ensuring the charging port is easily accessible.",
+    },
+    {
+      num: "04",
+      title: "Connect Your EV:",
+      desc: "Open your vehicle's charge port carefully, retrieve the connector from the station, and firmly plug the charging port into your car.",
+    },
+    {
+      num: "06",
+      title: "Unplug & Go:",
+      desc: "Once your session is complete, safely unplug the connector, and you are ready to drive. The payment receipt will be sent directly to your app or email.",
+    },
+  ];
+
   return (
-    <section className="w-full bg-[#FAFAFA] py-20 border-t border-black/10">
-      <div className="mx-auto max-w-[1440px] px-8">
-        <div className="grid grid-cols-2 gap-16 items-center">
-          {/* Left Column */}
-          <div className="relative h-[520px] w-full overflow-hidden border border-black/10 bg-neutral-100">
+    <section id="charging" className="w-full bg-[#FAFAFA] py-20 border-t border-black/10">
+      <div className="mx-auto max-w-[1360px] px-8">
+        {/* Centered Top Heading */}
+        <div className="text-center max-w-2xl mx-auto">
+          <span className="text-[11px] font-bold tracking-[0.25em] text-black uppercase">
+            How to Use:
+          </span>
+          <h2 className="font-heading mt-2 text-4xl md:text-5xl font-bold tracking-tight text-black">
+            Simple 6 Steps to Power
+          </h2>
+        </div>
+
+        {/* 3-Column Diagram Layout */}
+        <div className="mt-25 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column (Steps 01, 03, 05) - Aligned to Right */}
+          <div className="lg:col-span-4 flex flex-col space-y-10 text-left lg:text-right">
+            {leftSteps.map((step, index) => (
+              <div
+                key={step.num}
+                className={`flex flex-col ${
+                  index !== leftSteps.length - 1 ? "border-b border-black/10 pb-10" : ""
+                }`}
+              >
+                <span className="font-numbers text-3xl md:text-4xl font-bold text-black tracking-tight">
+                  {step.num}
+                </span>
+                <h3 className="font-heading mt-1 text-base font-bold text-black tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="font-body mt-2 text-xs leading-relaxed text-black/60 max-w-sm lg:ml-auto">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Center Column: Large Dominant Charging Pedestal Image */}
+          <div className="lg:col-span-4 relative h-[560px] w-[460px] flex items-center justify-center">
             <Image
-              src="/images/behind.avif"
-              alt="AURA Charging & Infrastructure"
+              src="/images/charger.png"
+              alt="AURA Ultra-Fast EV Charging Pedestal"
               fill
-              className="object-cover"
+              className="object-fill scale-130"
+              priority
             />
           </div>
 
-          {/* Right Column */}
-          <div className="flex flex-col justify-center pl-8">
-            <h2 className="font-heading mt-6 text-6xl font-bold uppercase tracking-tight leading-[1.02] text-black">
-              POWER
-              <br />
-              WHEREVER
-              <br />
-              YOU GO.
-            </h2>
-
-            <p className="font-body mt-8 max-w-lg text-base font-normal leading-relaxed text-black/70">
-              Seamlessly tap into an expansive high-voltage ultra-fast charging ecosystem. With
-              predictive thermal battery conditioning, the vehicle prepares its cell chemistry
-              prior to arrival, ensuring peak charging velocity and zero wasted downtime.
-            </p>
-
-            <div className="mt-12 flex items-center gap-8">
-              <Link
-                href="#technology"
-                className="border border-black bg-black px-8 py-4 text-xs font-semibold tracking-[0.2em] text-white uppercase inline-flex items-center gap-3"
+          {/* Right Column (Steps 02, 04, 06) - Aligned to Left */}
+          <div className="lg:col-span-4 flex flex-col space-y-10 text-left">
+            {rightSteps.map((step, index) => (
+              <div
+                key={step.num}
+                className={`flex flex-col ${
+                  index !== rightSteps.length - 1 ? "border-b border-black/10 pb-10" : ""
+                }`}
               >
-                <span>EXPLORE TECHNOLOGY</span>
-              </Link>
-
-              <div className="flex flex-col">
-                <span className="font-numbers text-xl font-bold text-black">350 KW</span>
-                <span className="text-[10px] tracking-widest text-black/50 uppercase">PEAK CHARGE RATE</span>
+                <span className="font-numbers text-3xl md:text-4xl font-bold text-black tracking-tight">
+                  {step.num}
+                </span>
+                <h3 className="font-heading mt-1 text-base font-bold text-black tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="font-body mt-2 text-xs leading-relaxed text-black/60 max-w-sm mr-auto">
+                  {step.desc}
+                </p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

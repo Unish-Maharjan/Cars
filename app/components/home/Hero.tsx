@@ -1,77 +1,196 @@
 "use client";
 
 import React, { useRef } from "react";
-import Image from "next/image";
-import { gsap } from "gsap";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import HeroCar from "./HeroCar";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function Hero() {
-  const heroRef = useRef<HTMLElement>(null);
-  const carRef = useRef<HTMLDivElement>(null);
-
-  const specs = [
-    { label: "RANGE", value: "610 KM" },
-    { label: "TOP SPEED", value: "200 KM/H" },
-    { label: "POWER", value: "500 HP" },
-    { label: "BATTERY", value: "100 KWH" },
-  ];
+  const containerRef = useRef<HTMLElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+  const carWrapperRef = useRef<HTMLDivElement>(null);
+  const shadowRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      if (!heroRef.current || !carRef.current) return;
+      if (!containerRef.current) return;
 
-      gsap.to(carRef.current, {
-        x: -1200,
-        ease: "none",
+      // 1. Initial state setup (Car positioned from the header direction downwards)
+      gsap.set(carWrapperRef.current, { yPercent: -80, opacity: 0.8, scale: 0.96 });
+      gsap.set(shadowRef.current, { opacity: 0, scale: 0.8 });
+      gsap.set(".animate-left", { opacity: 0, x: -35 });
+      gsap.set(".animate-right", { opacity: 0, x: 35 });
+
+      // 2. Initial Page Entrance Animation: Car arrives from the header facing downwards
+      const introTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      introTl.to(carWrapperRef.current, {
+        yPercent: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 1.5,
+        ease: "power4.out",
+      });
+
+      introTl.to(
+        shadowRef.current,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.2,
+          ease: "power2.out",
+        },
+        "-=1.0"
+      );
+
+      // Stagger in left editorial column
+      introTl.to(
+        ".animate-left",
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: "power3.out",
+        },
+        "-=0.8"
+      );
+
+      // Stagger in right editorial column
+      introTl.to(
+        ".animate-right",
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: "power3.out",
+        },
+        "-=0.7"
+      );
+
+      // 3. SCROLL TIMELINE: CAR DRIVES DOWNWARDS TO MEETAURA AS USER SCROLLS
+      const scrollTl = gsap.timeline({
         scrollTrigger: {
-          trigger: heroRef.current,
+          trigger: containerRef.current,
           start: "top top",
           end: "bottom top",
-          scrub: 0.5,
-          pin: true,
+          scrub: 1.2,
+          invalidateOnRefresh: true,
         },
+        defaults: { ease: "none" },
       });
+
+      // Hero left and right text fades away
+      scrollTl.to(
+        leftColRef.current,
+        {
+          y: -50,
+          opacity: 0,
+          duration: 35,
+          ease: "power2.inOut",
+        },
+        0
+      );
+
+      scrollTl.to(
+        rightColRef.current,
+        {
+          y: -50,
+          opacity: 0,
+          duration: 35,
+          ease: "power2.inOut",
+        },
+        0
+      );
+
+      // Car drives continuously DOWNWARDS into MeetAura
+      scrollTl.to(
+        carWrapperRef.current,
+        {
+          yPercent: 115,
+          scale: 0.95,
+          opacity: 1,
+          duration: 85,
+          ease: "none",
+        },
+        10
+      );
+
+      scrollTl.to(
+        shadowRef.current,
+        {
+          scale: 0.85,
+          opacity: 0.35,
+          yPercent: 85,
+          duration: 85,
+          ease: "none",
+        },
+        10
+      );
     },
-    { scope: heroRef }
+    { scope: containerRef }
   );
 
   return (
     <section
-      ref={heroRef}
-      className="relative flex min-h-screen w-full flex-col justify-between overflow-hidden bg-white pt-24 pb-8"
+      ref={containerRef}
+      id="hero"
+      className="relative w-full min-h-screen bg-white text-[#111315] overflow-x-clip overflow-y-visible flex flex-col justify-center select-none py-10 lg:py-0 z-30"
     >
-      {/* Main Composition: Left-Aligned Editorial Headline matching Header Logo */}
-      <div className="mx-auto my-auto flex w-full max-w-full flex-col items-center px-8">
-        {/* Large Editorial Headline */}
-        <div className="text-left">
-          <h1 className="font-heading text-[12vw] text-center font-bold leading-[0.88] tracking-[-0.04em]
-           text-black uppercase select-none">
-            MOVE
-            <br />
-            WITHOUT
-            <br />
-            LIMITS
+      <div className="max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[90vh] relative z-10 overflow-visible">
+        
+        {/* LEFT COLUMN: HERO INFORMATION */}
+        <div
+          ref={leftColRef}
+          className="lg:col-span-4 flex flex-col justify-center items-start z-30 pt-6 lg:pt-0 will-change-transform"
+        >
+          {/* Main Headline */}
+          <h1 className="animate-left text-5xl sm:text-6xl lg:text-7xl font-bold text-[#111315] uppercase font-sans mb-4">
+            MINI
+            <span className="block font-extrabold text-[#111315]">ELECTRIC</span>
           </h1>
+
+          {/* Clean Automotive Copy */}
+          <p className="animate-left text-sm sm:text-base text-[#555B66] max-w-sm font-normal">
+            Next-generation all-electric performance. Engineered with precision, agility, and pure electric torque.
+          </p>
         </div>
 
-        {/* Vehicle Image (Animates to the left on scroll) */}
-        <div
-          ref={carRef}
-          className="relative -mt-[14vw] self-center z-10 w-full max-w-[1000px] h-[360px] will-change-transform"
-        >
-          <Image
-            src="/images/car.png"
-            alt="AURA Electric Vehicle"
-            fill
-            priority
-            className="object-contain"
+        {/* CENTER COLUMN: DOWNWARD FACING CAR (Drives downward across boundary into MeetAura) */}
+        <div className="lg:col-span-4 relative flex justify-center items-center pointer-events-none z-50 overflow-visible">
+          <HeroCar
+            carWrapperRef={carWrapperRef}
+            shadowRef={shadowRef}
+            facing="down"
+            className="w-full flex justify-center items-center"
           />
         </div>
+
+        {/* RIGHT COLUMN: EDITORIAL DETAILS */}
+        <div
+          ref={rightColRef}
+          className="lg:col-span-4 flex flex-col justify-center items-start lg:items-end text-left lg:text-right z-30 pt-6 lg:pt-0 will-change-transform"
+        >
+          <div className="animate-right max-w-sm flex flex-col gap-3">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#111315] uppercase
+             tracking-tight leading-snug">
+              Instant Torque.
+              <br />
+              Zero Compromise.
+            </h3>
+            <p className="text-sm text-[#555B66] font-normal leading-relaxed">
+              Crafted for responsive handling, aerodynamically balanced weight distribution, and pure electric freedom.
+            </p>
+          </div>
+        </div>
+
       </div>
     </section>
   );
